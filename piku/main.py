@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import sys
 import argparse
 import traceback
@@ -12,14 +11,29 @@ def main():
     subparsers = parser.add_subparsers(dest='parser')
     parsers = {}
 
-    # deploy command
-    p = subparsers.add_parser('deploy', help='deploy project to device')
-    p.set_defaults(cmd=commands.deploy)
+    # new command
+    p = subparsers.add_parser('new', help='create new CircuitPython project')
+    p.set_defaults(cmd=commands.new_command)
+
+    # add command
+    p = subparsers.add_parser('add', help='add library/module to project')
+    p.set_defaults(cmd=commands.add_command)
+
+    # remove command
+    p = subparsers.add_parser('remove', help='remove library/module from project')
+    p.set_defaults(cmd=commands.remove_command)
+
+    # install command
+    p = subparsers.add_parser('install', help='install project dependencies')
+    p.set_defaults(cmd=commands.install_command)
 
     # serial command
     p = subparsers.add_parser('serial', help='connect usb serial port of device')
-    p.set_defaults(cmd=commands.serial)
-    p.add_argument('-d', '--dns', type=str, default="1.1.1.1", help='specify dns server [default 1.1.1.1]')
+    p.set_defaults(cmd=commands.serial_command)
+
+    # deploy command
+    p = subparsers.add_parser('deploy', help='deploy project to device')
+    p.set_defaults(cmd=commands.deploy_command)
 
     # parse and execute
     args = parser.parse_args()

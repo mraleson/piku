@@ -1,2 +1,2 @@
-def serial(args):
+def serial_command(args):
     print('serial')

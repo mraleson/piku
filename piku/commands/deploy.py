@@ -1,2 +1,2 @@
-def deploy(args):
+def deploy_command(args):
     print('deploy')
