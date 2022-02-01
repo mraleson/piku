@@ -35,6 +35,14 @@ def main():
     p = subparsers.add_parser('deploy', help='deploy project to device')
     p.set_defaults(cmd=commands.deploy_command)
 
+    # version command
+    p = subparsers.add_parser('version', help='show piku version')
+    p.set_defaults(cmd=commands.version_command)
+
+    # info command
+    p = subparsers.add_parser('info', help='show additional piku information')
+    p.set_defaults(cmd=commands.info_command)
+
     # parse and execute
     args = parser.parse_args()
     if hasattr(args, 'cmd'):
