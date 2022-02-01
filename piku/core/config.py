@@ -1,8 +1,13 @@
 import os
 import toml
+from appdirs import user_data_dir
 
 
 config_path = os.path.join(os.getcwd(), 'piku.toml')
+data_path = user_data_dir('piku', 'piku')
+bundle_path = os.path.join(data_path, 'bundle')
+backup_path = os.path.join(data_path, 'backup')
+deploy_path = os.path.join(data_path, 'deploy')
 
 def load():
     return toml.load(config_path)
