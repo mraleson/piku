@@ -22,8 +22,9 @@ def main():
     p.add_argument('-s', '--source', type=str, help='specify a specific url or path to download/copy module from')
 
     # remove command
-    p = subparsers.add_parser('remove', help='remove library/module from project')
+    p = subparsers.add_parser('remove', help='remove module from project')
     p.set_defaults(cmd=commands.remove_command)
+    p.add_argument('module', help='module name [neopixel, my_module_name]')
 
     # install command
     p = subparsers.add_parser('install', help='install project dependencies')
