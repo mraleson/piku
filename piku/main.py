@@ -16,8 +16,10 @@ def main():
     p.set_defaults(cmd=commands.new_command)
 
     # add command
-    p = subparsers.add_parser('add', help='add library/module to project')
+    p = subparsers.add_parser('add', help='download and add module to project')
     p.set_defaults(cmd=commands.add_command)
+    p.add_argument('module', help='module name [neopixel, https://<url>.mpy]')
+    p.add_argument('-s', '--source', type=str, help='specify a specific url or path to download/copy module from')
 
     # remove command
     p = subparsers.add_parser('remove', help='remove library/module from project')
