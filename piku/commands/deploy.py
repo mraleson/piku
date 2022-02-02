@@ -1,4 +1,3 @@
-import os
 import shutil
 from piku.core import config
 from piku.core.sync import sync
