@@ -42,6 +42,8 @@ def main():
     # info command
     p = subparsers.add_parser('info', help='show additional piku information')
     p.set_defaults(cmd=commands.info_command)
+    p.add_argument('--clear-cache', action='store_true', help='clear module cache')
+    p.add_argument('-m', '--modules', action='store_true', help='list availiable modules')
 
     # parse and execute
     args = parser.parse_args()
