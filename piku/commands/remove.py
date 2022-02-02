@@ -4,7 +4,7 @@ from piku.core import config, modules, utils
 
 def remove_command(args):
     module = args.module.lower()
-    library = os.path.join(config.get('system', 'source', './source'), 'lib')
+    library = os.path.join(config.get('system', 'source', './project'), 'lib')
 
     # remove module from package.toml
     if not config.remove('dependencies', module):

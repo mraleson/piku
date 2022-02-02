@@ -6,7 +6,7 @@ from piku.core.backup import backup
 
 def deploy_command(args):
     # get device
-    source = config.get('system', 'source', './source')
+    source = config.get('system', 'source', './project')
     device = config.get('system', 'device')
 
     # check that device size and name are as expected to reduce chances of loading onto wrong device

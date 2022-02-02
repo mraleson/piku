@@ -23,7 +23,7 @@ def add_command(args):
         return
 
     # copy or download module
-    destination = os.path.join(config.get('system', 'source', './source'), 'lib')
+    destination = os.path.join(config.get('system', 'source', './project'), 'lib')
     path = modules.aquire(source, destination)
     if not path:
         print(f'Unable to download or copy requested module: {module} from {source}')
