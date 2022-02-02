@@ -16,12 +16,25 @@ def save(config):
     with open(config_path, 'w') as file:
         toml.dump(config, file)
 
-def get(section, key, default=None):
+def get(section, key=None, default=None):
     config = load()
+    if key is None:
+        return config.get(section, {})
     return config.get(section, {}).get(key, default)
 
 def set(section, key, value):
     config = load()
     if section not in config:
         config[section] = {}
-    return config[section].set(key, value)
+    config[section][key] = value
+    save(config)
+
+def remove(section, key):
+    config = load()
+    if section not in config:
+        config[section] = {}
+    if key in config[section]:
+        value = config[section][key]
+        del config[section][key]
+        save(config)
+        return value
