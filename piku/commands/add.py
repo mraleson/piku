@@ -21,6 +21,7 @@ def add_command(args):
         return
 
     # copy or download module
+    print(f'Acquiring {module}...')
     if not modules.aquire(path):
         print(f'Unable to aquire requested module: {module}')
         return
