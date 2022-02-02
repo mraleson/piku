@@ -1,100 +1,51 @@
 import os
-import json
-import shutil
-import zipfile
 from piku.core import config, utils
+from piku.core.index import index
 
-
-bundles = {
-    '7': {
-        'official': 'https://github.com/adafruit/Adafruit_CircuitPython_Bundle/releases/download/20220131/adafruit-circuitpython-bundle-7.x-mpy-20220131.zip',
-        'community': 'https://github.com/adafruit/CircuitPython_Community_Bundle/releases/download/20220113/circuitpython-community-bundle-7.x-mpy-20220113.zip'
-    }
-}
-
-def clear_cache():
-    try:
-        shutil.rmtree(config.bundle_path)
-    except FileNotFoundError:
-        pass
-
-def index(bundle):
-    # construct paths
-    bundle_cache_path = os.path.join(config.bundle_path, bundle)
-    bundle_index_path = os.path.join(bundle_cache_path, 'index.json')
-    official_zip_url = bundles[bundle]['official']
-    official_zip_file = official_zip_url.split('/')[-1]
-    official_version = official_zip_file.replace('.zip', '')
-    official_zip_path = os.path.join(bundle_cache_path, official_zip_file)
-    official_bundle_path = os.path.join(bundle_cache_path, official_zip_file.replace('.zip', ''))
-    official_lib_path = os.path.join(official_bundle_path, 'lib')
-    community_zip_url = bundles[bundle]['community']
-    community_zip_file = community_zip_url.split('/')[-1]
-    community_version = community_zip_file.replace('.zip', '')
-    community_zip_path = os.path.join(bundle_cache_path, community_zip_file)
-    community_bundle_path = os.path.join(bundle_cache_path, community_zip_file.replace('.zip', ''))
-    community_lib_path = os.path.join(community_bundle_path, 'lib')
-
-    # load index
-    try:
-        with open(bundle_index_path, 'r') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        pass
-
-    # create bundle cache dir
-    os.makedirs(bundle_cache_path, exist_ok=True)
-
-    # download bundle zip files
-    if not os.path.exists(official_zip_path):
-        print ('Downloading official bundle...')
-        utils.download(bundles[bundle]['official'], official_zip_path)
-        print('Done')
-    if not os.path.exists(community_zip_path):
-        print ('Downloading community bundle...')
-        utils.download(bundles[bundle]['community'], community_zip_path)
-        print('Done')
-
-    # extract bundles
-    with zipfile.ZipFile(official_zip_path, 'r') as zip:
-        zip.extractall(bundle_cache_path)
-    with zipfile.ZipFile(community_zip_path, 'r') as zip:
-        zip.extractall(bundle_cache_path)
-
-    # build index
-    idx = {}
-    for module in os.listdir(official_lib_path):
-        name = module.replace('.mpy', '')
-        idx[name] = {'version': official_version, 'path': os.path.join(official_lib_path, module)}
-    for module in os.listdir(community_lib_path):
-        name = module.replace('.mpy', '')
-        idx[name] = {'version': community_version, 'path': os.path.join(community_lib_path, module)}
-    with open(bundle_index_path, 'w') as f:
-        json.dump(idx, f, indent=2)
-
-    # return index
-    return idx
 
 # find a module
-def find(module, bundle):
-    if bundle not in bundles:
-        return {}
-    idx = index(bundle)
-    return idx.get(module, {})
+def find(module, bundle=None):
+    bundle = bundle or config.get('general', 'circuitpython')
+    return index(bundle).get(module)
 
-def suggest(module, bundle):
-    if bundle not in bundles:
-        return set()
-    idx = index(bundle)
-    return utils.similar(module, idx.keys())
+# suggest a module from index lexically similar to the one provided
+def suggest(module, bundle=None):
+    bundle = bundle or config.get('general', 'circuitpython')
+    return utils.similar(module, index(bundle).keys())
 
-def aquire(source, lib_path):
-    shutil.copy2(source, lib_path)
-    return lib_path
+# copy a module from source to project library
+def aquire(source, project_path=None):
+    project_path = project_path or config.get('system', 'source', './project')
+    library_path = os.path.join(project_path, 'lib')
+    if os.path.isdir(project_path):
+        os.makedirs(library_path, exist_ok=True)
+    return utils.copy(source, library_path)
 
-def delete(module, lib_path):
-    for path in os.listdir(lib_path):
+# remove a module from project library
+def remove(module, library_path=None):
+    library_path = library_path or os.path.join(config.get('system', 'source', './project'), 'lib')
+    for path in os.listdir(library_path):
         if path in [module, f'{module}.mpy']:
-            utils.remove(os.path.join(lib_path, path))
+            utils.remove(os.path.join(library_path, path))
             return True
     return False
+
+# decode module name and source from request module path
+def decode(module):
+
+    # module from local file
+    if module.startswith('file:'):
+        path = module[5:]
+        name = os.path.splitext(os.path.basename(path))[0]
+        type = 'file'
+        version = module
+
+    # module from index via semver
+    else:
+        bundle = config.get('general', 'circuitpython')
+        name = module.lower() # future need semver parse
+        type = 'index'
+        path = find(module)
+        version = f'~{bundle}' # future need semver parse
+
+    return (name, type, path, version)

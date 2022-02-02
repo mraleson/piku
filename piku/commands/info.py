@@ -1,6 +1,5 @@
 from piku.commands.version import get_version
-from piku.core import modules
-from piku.core import config
+from piku.core import modules, config, utils
 
 
 def info_command(args):
@@ -11,7 +10,10 @@ def info_command(args):
 
     if args.clear_cache:
         print('Clearing module cache...')
-        modules.clear_cache()
+        try:
+            utils.remove(config.bundle_path)
+        except FileNotFoundError:
+            pass
         print('Done')
 
     if args.modules:

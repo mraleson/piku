@@ -32,7 +32,7 @@ def sync(src_dir, dst_dir, exclude=None, verbosity=1):
             if verbosity > 1: print(f'* Ignoring copy {dst}')
         elif different(src, dst):
             if verbosity > 0: print(f'* Copying {src} to {dst}')
-            copy(src, dst)
+            copy(src, dst, recursive=False)
         else:
             if verbosity > 1: print(f'* Files {src} {dst} are the same')
 
@@ -43,4 +43,4 @@ def sync(src_dir, dst_dir, exclude=None, verbosity=1):
             if verbosity > 1: print(f'* Ignoring remove {full_path}')
         else:
             if verbosity > 0: print(f'* Removing {full_path}')
-            remove(full_path)
+            remove(full_path, recursive=False)

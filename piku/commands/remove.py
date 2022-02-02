@@ -4,7 +4,6 @@ from piku.core import config, modules, utils
 
 def remove_command(args):
     module = args.module.lower()
-    library = os.path.join(config.get('system', 'source', './project'), 'lib')
 
     # remove module from package.toml
     if not config.remove('dependencies', module):
@@ -17,5 +16,5 @@ def remove_command(args):
         return
 
     # remove file from library
-    if not modules.delete(module, library):
-        print(f'Warning: Unable to find and delete matching file in source for module {module} in {library}')
+    if not modules.remove(module):
+        print(f'Warning: Unable to find and delete matching file in source for module {module} in project')

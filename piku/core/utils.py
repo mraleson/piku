@@ -19,18 +19,22 @@ def tree(path):
         paths.extend([os.path.relpath(os.path.join(root, f), path) for f in files])
     return set(paths)
 
-def copy(src, dst):
+def copy(src, dst, recursive=True):
     if os.path.isdir(src):
-        os.makedirs(dst, exist_ok=True)
-    else:
-        shutil.copy2(src, dst)
+        if recursive:
+            return shutil.copytree(src, os.path.join(dst, os.path.basename(src)), dirs_exist_ok=True)
+        return os.makedirs(dst, exist_ok=True)
+    return shutil.copy2(src, dst)
 
-def remove(path):
+def remove(path, recursive=True):
     if os.path.isdir(path):
-        try:
-            os.rmdir(path)
-        except OSError:
-            pass # raised if dir is not empty, this should only happen when a file was ignored in the folder
+        if recursive:
+            shutil.rmtree(path)
+        else:
+            try:
+                os.rmdir(path)
+            except OSError:
+                pass # raised if dir is not empty, this should only happen when a file was ignored in the folder
     else:
         os.remove(path)
 
