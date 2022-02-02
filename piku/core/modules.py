@@ -43,9 +43,12 @@ def decode(module):
     # module from index via semver
     else:
         bundle = config.get('general', 'circuitpython')
-        name = module.lower() # future need semver parse
+        parts = module.split('@')
+        name = parts[0].lower()
         type = 'index'
-        path = find(module)
-        version = f'~{bundle}' # future need semver parse
-
+        path = find(name)
+        if len(parts) > 1:
+            version = parts[1]
+        else:
+            version = f'~{bundle}'
     return (name, type, path, version)
