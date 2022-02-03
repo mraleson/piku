@@ -9,10 +9,19 @@ def deploy_command(args):
     source = config.get('system', 'source', './project')
     device = config.get('system', 'device')
 
+    # check that device has been specified
+    if not device:
+        print('Unable to deploy, please specify a device to deploy to in your piku.toml file.')
+        return
+
     # check that device size and name are as expected to reduce chances of loading onto wrong device
     total, used, free = shutil.disk_usage(device)
-    assert total < 3E6, 'Specified CircuitPython drive is larger than expected (~2MB).'
-    assert 'circuitpy' in device.lower(), 'Expected device to have "circuitpy" in path.'
+    if total > 3E6:
+        print('Refusing to deploy, specified CircuitPython drive is larger than expected (~2MB).')
+        return
+    if'circuitpy' not in device.lower():
+        print('Refusing to deploy, expected device to have "circuitpy" in path.')
+        return
 
     # backup device files before deploy
     print('Backing up device files...')
