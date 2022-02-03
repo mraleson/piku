@@ -6,6 +6,9 @@ authors = ["Mark Raleson <markraleson@outlook.com>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/mraleson/rag.git"
+packages = [
+  { include="piku" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -13,6 +16,7 @@ pyserial = "^3.5"
 toml = "^0.10.2"
 appdirs = "^1.4.4"
 requests = "^2.27.1"
+Jinja2 = "^3.0.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
