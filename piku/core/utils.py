@@ -19,9 +19,11 @@ def tree(path):
         paths.extend([os.path.relpath(os.path.join(root, f), path) for f in files])
     return set(paths)
 
-def copy(src, dst, recursive=True):
+def copy(src, dst, recursive=True, contents=False):
     if os.path.isdir(src):
         if recursive:
+            if contents:
+                return shutil.copytree(src, dst, dirs_exist_ok=True)
             return shutil.copytree(src, os.path.join(dst, os.path.basename(src)), dirs_exist_ok=True)
         return os.makedirs(dst, exist_ok=True)
     return shutil.copy2(src, dst)
