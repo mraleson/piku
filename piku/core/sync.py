@@ -23,6 +23,7 @@ def sync(src_dir, dst_dir, exclude=None, verbosity=1):
     dst_tree = tree(dst_dir)
     to_rm = dst_tree - src_tree
     to_ignore = {os.path.join(dst_dir, i) for i in (exclude or [])}
+    changes_detected = False
 
     # create any missing dir and copy over missing files (sorted so dirs are created files)
     for path in sorted(src_tree):
@@ -33,6 +34,7 @@ def sync(src_dir, dst_dir, exclude=None, verbosity=1):
         elif different(src, dst):
             if verbosity > 0: print(f'* Copying {src} to {dst}')
             copy(src, dst, recursive=False)
+            changes_detected = True
         else:
             if verbosity > 1: print(f'* Files {src} {dst} are the same')
 
@@ -44,3 +46,7 @@ def sync(src_dir, dst_dir, exclude=None, verbosity=1):
         else:
             if verbosity > 0: print(f'* Removing {full_path}')
             remove(full_path, recursive=False)
+            changes_detected = True
+
+    if verbosity > 0 and not changes_detected:
+        print('Nothing to deploy, no changes were detected.')
