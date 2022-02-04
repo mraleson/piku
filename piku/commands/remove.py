@@ -5,7 +5,7 @@ from piku.core import config, modules, utils
 def remove_command(args):
     module = args.module.lower()
 
-    # remove module from package.toml
+    # remove module from pyproject.toml
     if not config.remove(f'tool.piku.dependencies.{module}'):
         print(f'Unable to find matching module {module} in pyproject.toml')
         suggestions = utils.similar(module, config.get('tool.piku.dependencies').keys())

@@ -108,7 +108,7 @@ You can easily download and add CircuitPython modules from the official Bundle o
 piku add neopixel
 ```
 
-The specified module will be downloaded and added to your `lib` folder and your `project.toml` file. You can also remove this module by typing:
+The specified module will be downloaded and added to your `lib` folder and your `pyproject.toml` file. You can also remove this module by typing:
 
 ```
 piku remove neopixel
@@ -206,7 +206,7 @@ piku add adafruit_sht31d
 piku add neopixel
 ```
 
-These modules should now found to your project `lib` folder, and your `piki.toml` file.  Confirm this by listing the files in your `lib` directory using `ls project/lib`. The ls command should return something the following if all modules were installed properly:
+These modules should now found to your project `lib` folder, and your `pyproject.toml` file.  Confirm this by listing the files in your `lib` directory using `ls project/lib`. The ls command should return something the following if all modules were installed properly:
 ```
 adafruit_apds9960  adafruit_bmp280.mpy  adafruit_bus_device  adafruit_lis3mdl.mpy  adafruit_lsm6ds  adafruit_register  adafruit_sht31d.mpy  neopixel.mpy
 ```

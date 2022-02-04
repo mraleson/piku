@@ -26,5 +26,5 @@ def add_command(args):
         print(f'Unable to aquire requested module: {module}')
         return
 
-    # save module in package.toml
+    # save module in pyproject.toml
     config.set(f'tool.piku.dependencies.{module}', version)
