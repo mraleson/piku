@@ -33,6 +33,7 @@ def main():
     # serial command
     p = subparsers.add_parser('serial', help='connect usb serial port of device')
     p.set_defaults(cmd=commands.serial_command)
+    p.add_argument('-s', '--serial', default=None, help='serial port to connect to')
 
     # deploy command
     p = subparsers.add_parser('deploy', help='deploy project to device')

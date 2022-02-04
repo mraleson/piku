@@ -13,7 +13,7 @@ def default():
 def serial_command(args):
     baud = 115200
     using_default = False
-    port = config.get('system', 'serial')
+    port = args.serial
     if not port:
         using_default = True
         port = default()
