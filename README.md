@@ -67,7 +67,7 @@ cd example
 
 
 ### Deploying your Project
-After you have created a project you can deploy your project to a connected CircuitPython device.  To deploy your project find the path of your `CIRCUITPY` UDB drive.  Then type:
+After you have created a project and modified the main `code.py` file you can deploy your project to a connected CircuitPython device.  To deploy your project find the path of your `CIRCUITPY` UDB drive.  Then type:
 
 ```
 piku deploy -d <path of your device>
@@ -117,3 +117,16 @@ piku remove neopixel
 You can also install modules you can manually downloaded, please check cli help for more information `piku add -h`.
 
 Currently Piku just works for the Bundle 7, which was the most recent bundle when the tool was built.  But hopefully a full semver module index and supporting older versions and CircuitPython is something that can be done in the future.
+
+
+# Contributing
+
+Contributions are very welcome, my time to work on the project is limited.  Please post issues and pull requests on Github if you would like to help forward the project.
+
+### Future Work
+
+It would be great to support older versions of CircuitPython and properly detect and download modules using semver.
+
+MacOS support and testing. I don't own a Mac so there are some missing elements for MacOS support.
+
+Loading board specific examples when using create.  It would be neat to index or support examples for boards, so when you create a project the dependencies and `code.py` file are already filled in with starter code.
