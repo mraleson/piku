@@ -4,10 +4,17 @@ from piku.core import utils
 from piku.commands.version import get_version
 
 
+def template(path, context):
+    with open(path, 'r') as f:
+        template = Template(f.read())
+    with open(path, 'w') as f:
+        f.write(template.render(**context))
+
 def create_command(args):
     # build template context
     project_path = f'./{args.project}'
     toml_path = os.path.join(project_path, 'piku.toml')
+    readme_path = os.path.join(project_path, 'README.md')
     context = {
         'project': args.project,
         'piku': get_version(),
@@ -24,6 +31,18 @@ def create_command(args):
         print(f'Unable to create project: directory {project_path} already exists.')
         return
 
+    # create project from template
+    src = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../template')
+    utils.copy(src, project_path, contents=True)
+
+    # template files
+    template(toml_path, context)
+    template(readme_path, context)
+
+    print('Done.')
+
+    # in the future allow loading an example and dependencies for a specific board
+
     # # select board
     # print('Please enter the name of your CircuitPython board:')
     # context['board'] = input().strip()
@@ -35,17 +54,3 @@ def create_command(args):
     # # select serial port
     # print('Please enter the serial port for your CircuitPython device:')
     # context['serial'] = input().strip()
-
-    # create project from template
-    src = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../template')
-    utils.copy(src, project_path, contents=True)
-
-    # template piku.toml
-    with open(toml_path, 'r') as f:
-        template = Template(f.read())
-    with open(toml_path, 'w') as f:
-        f.write(template.render(**context))
-
-    # in the future allow loading an example and dependencies for a specific board
-
-    print('Done.')
