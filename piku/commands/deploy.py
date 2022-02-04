@@ -33,7 +33,7 @@ def find_device_path():
 
 def deploy_command(args):
     # get device
-    source = config.get('general', 'source', './project')
+    source = config.get('tool.piku.source')
     device = args.device or find_device_path()
 
     # check that we have a device found or specified

@@ -17,7 +17,7 @@ def info_command(args):
         print('Done')
 
     if args.modules:
-        index = modules.index(config.get('general', 'circuitpython'))
+        index = modules.index(config.get('tool.piku.circuitpython'))
         print('Availiable modules...')
         for module in index.keys():
             print(f' * {module}')

@@ -6,7 +6,7 @@ def add_command(args):
     module, type, path, version = modules.decode(args.module)
 
     # check if module already exists
-    if config.get('dependencies', module):
+    if config.get(f'tool.piku.dependencies.{module}'):
         print(f'Module {module} already added to project. To reinstall, remove the module and add it again.')
         return
 
@@ -27,4 +27,4 @@ def add_command(args):
         return
 
     # save module in package.toml
-    config.set('dependencies', module, version)
+    config.set(f'tool.piku.dependencies.{module}', version)

@@ -5,6 +5,22 @@ import difflib
 import requests
 
 
+def nget(dictionary, keys, default=None):
+    for key in keys[:-1]:
+        dictionary = dictionary.get(key, {})
+    return dictionary.get(keys[-1], default)
+
+def nset(dictionary, keys, value):
+    for key in keys[:-1]:
+        dictionary = dictionary.setdefault(key, {})
+    dictionary[keys[-1]] = value
+
+def ndel(dictionary, keys):
+    for key in keys[:-1]:
+        dictionary = dictionary.setdefault(key, {})
+    if keys[-1] in dictionary:
+        del dictionary[keys[-1]]
+
 def checksum(path):
     hasher = hashlib.md5()
     with open(path,'rb') as f:

@@ -2,7 +2,7 @@ from piku.core import config, modules
 
 
 def install_command(args):
-    deps = config.get('dependencies')
+    deps = config.get('tool.piku.dependencies')
     for name, version in deps.items():
 
         # determind module source

@@ -211,14 +211,14 @@ These modules should now found to your project `lib` folder, and your `piki.toml
 adafruit_apds9960  adafruit_bmp280.mpy  adafruit_bus_device  adafruit_lis3mdl.mpy  adafruit_lsm6ds  adafruit_register  adafruit_sht31d.mpy  neopixel.mpy
 ```
 
-Your piku.toml file should now look something like this:
+Your pyproject.toml file should now look something like this:
 ```
-[general]
+[tool.piku]
 project = "example"
 piku = "0.1.1"
 circuitpython = "7"
 
-[dependencies]
+[tool.piku.dependencies]
 adafruit_apds9960 = "~7"
 adafruit_bmp280 = "~7"
 adafruit_bus_device = "~7"

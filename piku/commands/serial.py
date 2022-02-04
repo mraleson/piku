@@ -28,7 +28,7 @@ def serial_command(args):
 
     # confirm that a port was configured or a default port was found
     if not port:
-        print('Failed to find a configured serial port in piku.toml or load find a default serial port to use.')
+        print('Failed to find the specified serial port or find a default serial port to use.')
         return
 
     # create serial port connection

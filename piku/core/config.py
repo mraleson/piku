@@ -1,13 +1,24 @@
 import os
 import toml
 from appdirs import user_data_dir
+from piku.core.utils import nset, nget, ndel
 
 
-config_path = os.path.join(os.getcwd(), 'piku.toml')
+defaults = {
+    'tool':
+    {
+        'piku': {
+        'source': './project'
+        }
+    }
+}
+
+config_path = os.path.join(os.getcwd(), 'pyproject.toml')
 data_path = user_data_dir('piku', 'piku')
 bundle_path = os.path.join(data_path, 'bundle')
 backup_path = os.path.join(data_path, 'backup')
 deploy_path = os.path.join(data_path, 'deploy')
+
 
 def load():
     return toml.load(config_path)
@@ -16,25 +27,22 @@ def save(config):
     with open(config_path, 'w') as file:
         toml.dump(config, file)
 
-def get(section, key=None, default=None):
+def get(dotpath):
     config = load()
-    if key is None:
-        return config.get(section, {})
-    return config.get(section, {}).get(key, default)
+    assert dotpath.startswith('tool.piku')
+    keys = dotpath.split('.')
+    return nget(config, keys, nget(defaults, keys))
 
-def set(section, key, value):
+def set(dotpath, value):
     config = load()
-    if section not in config:
-        config[section] = {}
-    config[section][key] = value
+    assert dotpath.startswith('tool.piku')
+    keys = dotpath.split('.')
+    nset(config, keys, value)
     save(config)
 
-def remove(section, key):
+def remove(dotpath):
     config = load()
-    if section not in config:
-        config[section] = {}
-    if key in config[section]:
-        value = config[section][key]
-        del config[section][key]
-        save(config)
-        return value
+    assert dotpath.startswith('tool.piku')
+    keys = dotpath.split('.')
+    ndel(config, keys)
+    save(config)

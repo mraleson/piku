@@ -13,7 +13,7 @@ def template(path, context):
 def create_command(args):
     # build template context
     project_path = f'./{args.project}'
-    toml_path = os.path.join(project_path, 'piku.toml')
+    toml_path = os.path.join(project_path, 'pyproject.toml')
     readme_path = os.path.join(project_path, 'README.md')
     context = {
         'project': args.project,

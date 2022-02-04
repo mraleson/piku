@@ -6,9 +6,9 @@ def remove_command(args):
     module = args.module.lower()
 
     # remove module from package.toml
-    if not config.remove('dependencies', module):
-        print(f'Unable to find matching module {module} in piku.toml')
-        suggestions = utils.similar(module, config.get('dependencies').keys())
+    if not config.remove(f'tool.piku.dependencies.{module}'):
+        print(f'Unable to find matching module {module} in pyproject.toml')
+        suggestions = utils.similar(module, config.get('tool.piku.dependencies').keys())
         if suggestions:
             print('Did you mean')
             for suggestion in suggestions:
