@@ -15,7 +15,7 @@ def suggest(module, bundle=None):
 
 # copy a module from source to project library
 def aquire(source, project_path=None):
-    project_path = project_path or config.get('system', 'source', './project')
+    project_path = project_path or config.get('general', 'source', './project')
     library_path = os.path.join(project_path, 'lib')
     if os.path.isdir(project_path):
         os.makedirs(library_path, exist_ok=True)
@@ -23,7 +23,7 @@ def aquire(source, project_path=None):
 
 # remove a module from project library
 def remove(module, library_path=None):
-    library_path = library_path or os.path.join(config.get('system', 'source', './project'), 'lib')
+    library_path = library_path or os.path.join(config.get('general', 'source', './project'), 'lib')
     for path in os.listdir(library_path):
         if path in [module, f'{module}.mpy']:
             utils.remove(os.path.join(library_path, path))

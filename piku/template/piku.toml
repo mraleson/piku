@@ -6,8 +6,4 @@ circuitpython = "{{bundle}}"
 board = "{{board}}"
 {% endif %}
 
-[system]
-device = "{{device}}"
-serial = "{{serial}}"
-
 [dependencies]

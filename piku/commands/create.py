@@ -28,13 +28,13 @@ def create_command(args):
     # print('Please enter the name of your CircuitPython board:')
     # context['board'] = input().strip()
 
-    # select device
-    print('Please enter the usb drive path of your device CircuitPython enabled device:')
-    context['device'] = input().strip()
-
-    # select serial port
-    print('Please enter the serial port for your CircuitPython device:')
-    context['serial'] = input().strip()
+    # # select device
+    # print('Please enter the usb drive path of your device CircuitPython enabled device:')
+    # context['device'] = input().strip()
+    #
+    # # select serial port
+    # print('Please enter the serial port for your CircuitPython device:')
+    # context['serial'] = input().strip()
 
     # create project from template
     src = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../template')

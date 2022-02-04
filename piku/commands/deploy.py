@@ -6,8 +6,8 @@ from piku.core.backup import backup
 
 def deploy_command(args):
     # get device
-    source = config.get('system', 'source', './project')
-    device = config.get('system', 'device')
+    source = config.get('general', 'source', './project')
+    device = args.device or find_device_path()
 
     # check that device has been specified
     if not device:
