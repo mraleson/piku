@@ -38,6 +38,8 @@ def main():
     # deploy command
     p = subparsers.add_parser('deploy', help='deploy project to device')
     p.set_defaults(cmd=commands.deploy_command)
+    p.add_argument('-d', '--device', default=None, help='path of device to deploy to project to')
+    p.add_argument('-y', '--yes', action='store_true', help='deploy to discovered device without confirmation dialog')
 
     # version command
     p = subparsers.add_parser('version', help='show piku version')
