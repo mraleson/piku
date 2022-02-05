@@ -23,6 +23,7 @@ pip install piku
 After Piku is installed you should be able to run Piku from the command line.  You can test this by typing `piku version`.
 
 ##### Linux
+
 To install Piku in Linux, make sure you have Python 3.8 or greater and install using pip3.
 
 ```
@@ -34,15 +35,16 @@ After Piku is installed you should be able to run Piku from the command line.  Y
 Some linux computers do not have the default pip user bin directory included in the PATH.  You may add this directory to your PATH or install without the `--user` argument.
 https://unix.stackexchange.com/questions/612779/warning-not-on-path-when-i-tried-to-install-python-extensions-im-new-to-linu
 
-
 After installation if your user does not have permissions to use the serial port, you may need to add your user to the `dialout` group.
 https://askubuntu.com/questions/58119/changing-permissions-on-serial-port#answer-58122
 
 
-#### MacOS
+#### macOS
 
-Help wanted!  The process should be similar to Linux.
-
+The process for macOS users is similar to that for Linux users. You shouldn't
+have to do anything extra for permissions to use the serial port. The code for
+enumerating serial ports on macOS tries to skip the Bluetooth serial ports and
+only look for serial ports whose device names contain the word 'usbmodem'.
 
 ### Preparing your Device
 
