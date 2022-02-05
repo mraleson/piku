@@ -1,4 +1,4 @@
-import os
+limport os
 import fnmatch
 from piku.core.utils import checksum, tree, copy, remove
 

@@ -3,6 +3,7 @@ import shutil
 import hashlib
 import difflib
 import requests
+import platform
 
 
 def nget(dictionary, keys, default=None):
@@ -10,10 +11,12 @@ def nget(dictionary, keys, default=None):
         dictionary = dictionary.get(key, {})
     return dictionary.get(keys[-1], default)
 
+
 def nset(dictionary, keys, value):
     for key in keys[:-1]:
         dictionary = dictionary.setdefault(key, {})
     dictionary[keys[-1]] = value
+
 
 def ndel(dictionary, keys):
     for key in keys[:-1]:
@@ -21,12 +24,14 @@ def ndel(dictionary, keys):
     if keys[-1] in dictionary:
         del dictionary[keys[-1]]
 
+
 def checksum(path):
     hasher = hashlib.md5()
-    with open(path,'rb') as f:
+    with open(path, "rb") as f:
         while chunk := f.read(128 * hasher.block_size):
             hasher.update(chunk)
     return hasher.digest()
+
 
 def tree(path):
     paths = []
@@ -35,33 +40,48 @@ def tree(path):
         paths.extend([os.path.relpath(os.path.join(root, f), path) for f in files])
     return set(paths)
 
+
 def copy(src, dst, recursive=True, contents=False):
     if os.path.isdir(src):
         if recursive:
             if contents:
                 return shutil.copytree(src, dst, dirs_exist_ok=True)
-            return shutil.copytree(src, os.path.join(dst, os.path.basename(src)), dirs_exist_ok=True)
+            return shutil.copytree(
+                src, os.path.join(dst, os.path.basename(src)), dirs_exist_ok=True
+            )
         return os.makedirs(dst, exist_ok=True)
     return shutil.copy2(src, dst)
+
 
 def remove(path, recursive=True):
     if os.path.isdir(path):
         if recursive:
-            shutil.rmtree(path)
+            shutil.rmtree(path, ignore_errors=True)
         else:
             try:
                 os.rmdir(path)
             except OSError:
-                pass # raised if dir is not empty, this should only happen when a file was ignored in the folder
+                pass  # raised if dir is not empty, this should only happen when a file was ignored in the folder
     else:
-        os.remove(path)
+        if platform.system() == "Darwin":
+            # This is a workaround for the fact that on macOS, removing
+            # extended attribute/resource fork files (._*) will fail once
+            # the file they belong to is rmeoved.
+            try:
+                os.remove(path)
+            except FileNotFoundError:
+                pass
+        else:
+            os.remove(path)
+
 
 def similar(value, options):
     candidates = {k for k in options if value in k}
-    return candidates.union(difflib.get_close_matches(value, options, 3, .3))
+    return candidates.union(difflib.get_close_matches(value, options, 3, 0.3))
+
 
 def download(url, path):
     with requests.get(url, stream=True) as r:
-        with open(path, 'wb') as f:
+        with open(path, "wb") as f:
             shutil.copyfileobj(r.raw, f)
     return path
