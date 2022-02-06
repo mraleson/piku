@@ -20,7 +20,10 @@ def ndel(dictionary, keys):
     for key in keys[:-1]:
         dictionary = dictionary.setdefault(key, {})
     if keys[-1] in dictionary:
+        value = dictionary[keys[-1]]
         del dictionary[keys[-1]]
+        return value
+    return None
 
 def checksum(path):
     hasher = hashlib.md5()

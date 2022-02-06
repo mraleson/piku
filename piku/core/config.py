@@ -44,5 +44,6 @@ def remove(dotpath):
     config = load()
     assert dotpath.startswith('tool.piku')
     keys = dotpath.split('.')
-    ndel(config, keys)
+    value = ndel(config, keys)
     save(config)
+    return value
