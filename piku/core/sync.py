@@ -10,7 +10,6 @@ def different(a, b):
         return os.path.getsize(a) != os.path.getsize(b) or checksum(a) != checksum(b)
     return True
 
-
 def ignored(path, patterns):
     for pattern in patterns:
         if fnmatch.filter([path], pattern):
@@ -32,27 +31,27 @@ def sync(src_dir, dst_dir, exclude=None, verbosity=1):
         dst = os.path.join(dst_dir, path)
         if ignored(dst, to_ignore):
             if verbosity > 1:
-                print(f"* Ignoring copy {dst}")
+                print(f'* Ignoring copy {dst}')
         elif different(src, dst):
             if verbosity > 0:
-                print(f"* Copying {src} to {dst}")
+                print(f'* Copying {src} to {dst}')
             copy(src, dst, recursive=False)
             changes_detected = True
         else:
             if verbosity > 1:
-                print(f"* Files {src} {dst} are the same")
+                print(f'* Files {src} {dst} are the same')
 
     # remove files that are in destination but not in source (reverse sorted so files rm before dirs)
     for path in reversed(sorted(to_rm)):
         full_path = os.path.join(dst_dir, path)
         if ignored(full_path, to_ignore):
             if verbosity > 1:
-                print(f"* Ignoring remove {full_path}")
+                print(f'* Ignoring remove {full_path}')
         else:
             if verbosity > 0:
-                print(f"* Removing {full_path}")
+                print(f'* Removing {full_path}')
             remove(full_path, recursive=False)
             changes_detected = True
 
     if verbosity > 0 and not changes_detected:
-        print("Nothing to deploy, no changes were detected.")
+        print('Nothing to deploy, no changes were detected.')
