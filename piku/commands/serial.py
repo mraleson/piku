@@ -1,10 +1,8 @@
+import platform
 from serial import Serial
 from serial.serialutil import SerialException
 from serial.tools import list_ports
 from serial.tools.miniterm import Miniterm
-import platform
-
-from piku.core import config
 
 
 def default():
