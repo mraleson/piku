@@ -23,6 +23,7 @@ Jinja2 = "^3.0.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+pylint-quotes = "^0.2.3"
 
 [tool.poetry.scripts]
 piku = 'piku.main:main'
