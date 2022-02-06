@@ -11,18 +11,18 @@ def backup(src, dst):
     timestamp = int(time() * 1000)
     backup_path = os.path.join(dst, str(timestamp))
 
-    if platform.system() == "Darwin":
+    if platform.system() == 'Darwin':
         shutil.copytree(
             src,
             backup_path,
             ignore=ignore_patterns(
-                ".Trashes",
-                ".Trashes/*",
-                "System Volume Information",
-                "System Volume Information/*",
-                ".metadata_never_index",
-                ".fseventsd",
-                "*/._*",
+                '.Trashes',
+                '.Trashes/*',
+                'System Volume Information',
+                'System Volume Information/*',
+                '.metadata_never_index',
+                '.fseventsd',
+                '*/._*',
             ),
         )
     else:
