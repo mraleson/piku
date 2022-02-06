@@ -1,4 +1,3 @@
-import platform
 from serial import Serial
 from serial.serialutil import SerialException
 from serial.tools import list_ports
@@ -7,17 +6,10 @@ from serial.tools.miniterm import Miniterm
 
 def default():
     ports = list_ports.comports()
+    # On macOS, we don't want to return the Bluetooth COM ports and
+    # on other platforms we may only want usb serial devices as well
+    ports = [p for p in ports if 'usb' in p.hwid.lower()]
     if not ports:
-        return None
-    if platform.system() == 'Darwin':
-        # On macOS, we don't want to return the Bluetooth COM ports
-        for p in ports:
-            try:
-                idx = p.device.index('usbmodem')
-                if idx:
-                    return p.device
-            except:
-                pass
         return None
     return ports[0].device
 
