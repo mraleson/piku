@@ -1,7 +1,6 @@
 import os
 import shutil
 from time import time
-from piku.core import config
 import platform
 from shutil import ignore_patterns
 
