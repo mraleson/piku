@@ -2,7 +2,10 @@
 name = "piku"
 version = "0.1.6"
 description = ""
-authors = ["Mark Raleson <markraleson@outlook.com>"]
+authors = [
+  "Mark Raleson <markraleson@outlook.com>",
+  "Tammy Cravit <tammy@tammymakesthings.com>"
+]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/mraleson/piku.git"
@@ -20,6 +23,8 @@ Jinja2 = "^3.0.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+pylint-quotes = "^0.2.3"
+pylint = "^2.12.2"
 
 [tool.poetry.scripts]
 piku = 'piku.main:main'

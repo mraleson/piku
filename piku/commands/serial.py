@@ -2,13 +2,17 @@ from serial import Serial
 from serial.serialutil import SerialException
 from serial.tools import list_ports
 from serial.tools.miniterm import Miniterm
-from piku.core import config
 
 
 def default():
     ports = list_ports.comports()
-    if not ports: return None
+    # On macOS, we don't want to return the Bluetooth COM ports and
+    # on other platforms we may only want usb serial devices as well
+    ports = [p for p in ports if 'usb' in p.hwid.lower()]
+    if not ports:
+        return None
     return ports[0].device
+
 
 def serial_command(args):
     baud = 115200

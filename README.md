@@ -11,10 +11,10 @@ This tool is in very early development and needs testing! Please be careful when
 # Getting Started
 
 ### Installation
-Piku has been lightly tested on Linux and Windows it may also work on macOS.  I don't have an Apple computer so contributions welcome! After installation you can learn about Piku or any command line arguments or flags type `piku -h` or `piku <command> -h` or the documentation here.
+Piku has been lightly tested on Linux, Windows, and macOS.  After installation you can learn about Piku or any command line arguments or flags type `piku -h` or `piku <command> -h` or the documentation here.
 
 ##### Windows
-To install Piku in Windows please install Python 3.8 or greater from the windows store or the official python website.  Then install using pip:
+To install Piku in Windows please install Python 3.8 or greater from the Windows Store or the official Python website.  Then install using `pip`:
 
 ```
 pip install piku
@@ -26,7 +26,7 @@ After Piku is installed you should be able to run Piku from the command line.  Y
 To install Piku in Linux, make sure you have Python 3.8 or greater and install using pip3.
 
 ```
-pip install --user piku
+pip3 install --user piku
 ```
 
 After Piku is installed you should be able to run Piku from the command line.  You can test this by typing `piku version`.
@@ -34,15 +34,14 @@ After Piku is installed you should be able to run Piku from the command line.  Y
 Some linux computers do not have the default pip user bin directory included in the PATH.  You may add this directory to your PATH or install without the `--user` argument.
 https://unix.stackexchange.com/questions/612779/warning-not-on-path-when-i-tried-to-install-python-extensions-im-new-to-linu
 
-
 After installation if your user does not have permissions to use the serial port, you may need to add your user to the `dialout` group.
 https://askubuntu.com/questions/58119/changing-permissions-on-serial-port#answer-58122
 
-
-#### MacOS
-
-Help wanted!  The process should be similar to Linux.
-
+##### macOS
+The process for macOS users is similar to that for Linux users. You shouldn't
+have to do anything extra for permissions to use the serial port. The code for
+enumerating serial ports on macOS tries to skip the Bluetooth serial ports and
+only look for serial ports whose device names contain the word 'usbmodem'.
 
 ### Preparing your Device
 
@@ -89,7 +88,7 @@ If changes have been made in your project code, the CircuitPython device should 
 
 ### Connecting to your Device
 
-You can also connect to your CircuitPython device's serial port using Piku.  To do this just user the serial command from your Piku project directory:
+You can also connect to your CircuitPython device's serial port using Piku.  To do this just use the serial command from your Piku project directory:
 
 ```
 piku serial
@@ -260,7 +259,5 @@ Contributions are very welcome, my time to work on the project is limited.  Plea
 ### Future Work
 
 It would be great to support older versions of CircuitPython and properly detect and download modules using semver.
-
-MacOS support and testing. I don't own a Mac so there are some missing elements for MacOS support.
 
 Loading board specific examples when using create.  It would be neat to index or support examples for boards, so when you create a project the dependencies and `code.py` file are already filled in with starter code.

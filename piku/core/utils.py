@@ -19,11 +19,14 @@ def ndel(dictionary, keys):
     for key in keys[:-1]:
         dictionary = dictionary.setdefault(key, {})
     if keys[-1] in dictionary:
+        value = dictionary[keys[-1]]
         del dictionary[keys[-1]]
+        return value
+    return None
 
 def checksum(path):
     hasher = hashlib.md5()
-    with open(path,'rb') as f:
+    with open(path, 'rb') as f:
         while chunk := f.read(128 * hasher.block_size):
             hasher.update(chunk)
     return hasher.digest()
@@ -52,13 +55,19 @@ def remove(path, recursive=True):
             try:
                 os.rmdir(path)
             except OSError:
-                pass # raised if dir is not empty, this should only happen when a file was ignored in the folder
+                pass  # raised if dir is not empty, this should only happen when a file was ignored in the folder
     else:
-        os.remove(path)
+        # This is a workaround for the fact that on macOS, removing
+        # extended attribute/resource fork files (._*) will fail once
+        # the file they belong to is removed.
+        try:
+            os.remove(path)
+        except FileNotFoundError:
+            pass
 
 def similar(value, options):
     candidates = {k for k in options if value in k}
-    return candidates.union(difflib.get_close_matches(value, options, 3, .3))
+    return candidates.union(difflib.get_close_matches(value, options, 3, 0.3))
 
 def download(url, path):
     with requests.get(url, stream=True) as r:

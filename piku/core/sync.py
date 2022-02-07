@@ -30,21 +30,26 @@ def sync(src_dir, dst_dir, exclude=None, verbosity=1):
         src = os.path.join(src_dir, path)
         dst = os.path.join(dst_dir, path)
         if ignored(dst, to_ignore):
-            if verbosity > 1: print(f'* Ignoring copy {dst}')
+            if verbosity > 1:
+                print(f'* Ignoring copy {dst}')
         elif different(src, dst):
-            if verbosity > 0: print(f'* Copying {src} to {dst}')
+            if verbosity > 0:
+                print(f'* Copying {src} to {dst}')
             copy(src, dst, recursive=False)
             changes_detected = True
         else:
-            if verbosity > 1: print(f'* Files {src} {dst} are the same')
+            if verbosity > 1:
+                print(f'* Files {src} {dst} are the same')
 
     # remove files that are in destination but not in source (reverse sorted so files rm before dirs)
     for path in reversed(sorted(to_rm)):
         full_path = os.path.join(dst_dir, path)
         if ignored(full_path, to_ignore):
-            if verbosity > 1: print(f'* Ignoring remove {full_path}')
+            if verbosity > 1:
+                print(f'* Ignoring remove {full_path}')
         else:
-            if verbosity > 0: print(f'* Removing {full_path}')
+            if verbosity > 0:
+                print(f'* Removing {full_path}')
             remove(full_path, recursive=False)
             changes_detected = True
 

@@ -14,19 +14,37 @@ def has_correct_size(path):
 def has_correct_label(path):
     if platform.system() == 'Windows':
         drive = path.split(':')[0]
-        label = check_output(f'cmd /c vol {drive}:'.split()).decode().split('\r\n')[0].split(' ').pop()
+        output = check_output(f'cmd /c vol {drive}:'.split()).decode()
+        label = output.split('\r\n')[0].split(' ').pop()
         return 'circuitpy' in label.lower()
     return 'circuitpy' in path.lower()
 
 def find_device_path():
     if platform.system() == 'Windows':
         output = check_output('wmic logicaldisk where drivetype=2 get DeviceId , VolumeName'.split()).decode()
-        drives = [line.split(' ')[0] for line in output.split('\r\n') if 'circuitpy' in line.lower()]
+        drives = [
+            line.split(' ')[0]
+            for line in output.split('\r\n')
+            if 'circuitpy' in line.lower()
+        ]
         return drives[0] if drives else None
     if platform.system() == 'Linux':
         output = check_output('lsblk -l -o mountpoint,label,rm'.split()).decode()
         lines = [line.split() for line in output.split('\n')]
-        drives = [line[0] for line in lines if len(line) == 3 and 'circuitpy' in line[1].lower() and line[2] == "1"]
+        drives = [
+            line[0]
+            for line in lines
+            if len(line) == 3 and 'circuitpy' in line[1].lower() and line[2] == '1'
+        ]
+        return drives[0] if drives else None
+    if platform.system() == 'Darwin':
+        output = check_output('mount'.split()).decode()
+        lines = [line.split() for line in output.split('\n')]
+        drives = [
+            line[2]
+            for line in lines
+            if len(line) > 4 and 'circuitpy' in line[2].lower()
+        ]
         return drives[0] if drives else None
     return None
 
