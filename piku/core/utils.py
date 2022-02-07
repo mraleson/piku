@@ -2,7 +2,6 @@ import os
 import shutil
 import hashlib
 import difflib
-import platform
 import requests
 
 
@@ -51,23 +50,20 @@ def copy(src, dst, recursive=True, contents=False):
 def remove(path, recursive=True):
     if os.path.isdir(path):
         if recursive:
-            shutil.rmtree(path, ignore_errors=True)
+            shutil.rmtree(path)
         else:
             try:
                 os.rmdir(path)
             except OSError:
                 pass  # raised if dir is not empty, this should only happen when a file was ignored in the folder
     else:
-        if platform.system() == 'Darwin':
-            # This is a workaround for the fact that on macOS, removing
-            # extended attribute/resource fork files (._*) will fail once
-            # the file they belong to is removed.
-            try:
-                os.remove(path)
-            except FileNotFoundError:
-                pass
-        else:
+        # This is a workaround for the fact that on macOS, removing
+        # extended attribute/resource fork files (._*) will fail once
+        # the file they belong to is removed.
+        try:
             os.remove(path)
+        except FileNotFoundError:
+            pass
 
 def similar(value, options):
     candidates = {k for k in options if value in k}
