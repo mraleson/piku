@@ -1,4 +1,4 @@
-import toml
+import json
 from copy import deepcopy
 from piku.core import config, packages
 
@@ -6,14 +6,15 @@ from piku.core import config, packages
 # load lock file
 def load():
     try:
-        return toml.load(config.lock_path)
+        with open(config.lock_path, 'r') as file:
+            return json.load(file)
     except FileNotFoundError:
         return {}
 
 # save lock file
 def save(locked):
     with open(config.lock_path, 'w') as file:
-        toml.dump(locked, file)
+        json.dump(locked, file, indent=2)
 
 # get lock dictionary fingerprint set for comparing lock dictionaries
 def fingerprint(locked):
