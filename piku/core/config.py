@@ -58,16 +58,16 @@ def save(config):
 # get value from nested dictionary with dotted pack a.b.c
 def get(dotpath):
     config = load()
-    if not dotpath.startswith('tool.piku.'):
-        dotpath = 'tool.piku.' + dotpath
+    if not dotpath.startswith('tool.piku'):
+        dotpath = 'tool.piku' + '.' + dotpath
     keys = dotpath.split('.')
     return nget(config, keys, nget(defaults, keys))
 
 # set value from nested dictionary with dotted pack a.b.c
 def set(dotpath, value):
     config = load()
-    if not dotpath.startswith('tool.piku.'):
-        dotpath = 'tool.piku.' + dotpath
+    if not dotpath.startswith('tool.piku'):
+        dotpath = 'tool.piku' + '.' + dotpath
     keys = dotpath.split('.')
     nset(config, keys, value)
     save(config)
@@ -75,9 +75,19 @@ def set(dotpath, value):
 # remove value from nested dictionary with dotted pack a.b.c
 def remove(dotpath):
     config = load()
-    if not dotpath.startswith('tool.piku.'):
-        dotpath = 'tool.piku.' + dotpath
+    if not dotpath.startswith('tool.piku'):
+        dotpath = 'tool.piku' + '.' + dotpath
     keys = dotpath.split('.')
     value = ndel(config, keys)
     save(config)
     return value
+
+# returns true if in a valid piku project
+def valid():
+    try:
+        config = load()
+        if not config.get('tool').get('piku'):
+            return False
+    except FileNotFoundError:
+        return False
+    return True

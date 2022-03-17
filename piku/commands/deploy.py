@@ -5,6 +5,11 @@ def deploy_command(args):
     # get device
     drive = args.device or device.find_device_path()
 
+    # check that we are in a piku project directory
+    if not config.valid():
+        print('Refusing to deploy, unable to find piku project in current directory.')
+        return
+
     # check that we have a device found or specified
     if not drive:
         print('Unable find a device and deploy, please specify a device to deploy to.')
