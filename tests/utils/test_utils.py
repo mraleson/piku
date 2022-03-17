@@ -8,6 +8,10 @@ def test_parse_semver():
     assert utils.parse_semver('~2').allows(utils.parse_semver('2.0.0'))
     assert utils.parse_semver('latest').allows(utils.parse_semver('1.0.0'))
 
+def test_sort_semver():
+    items = ['1.0.2', '1.0.0', '2.0.0', '1.0.10', '1.0.1-alpha', 'bogus', '1.0.1']
+    assert utils.sort_versions(items) == ['bogus', '1.0.0', '1.0.1-alpha', '1.0.1', '1.0.2', '1.0.10', '2.0.0']
+
 def test_binary_search():
     a = [10, 20, 30, 40, 40, 40, 50]
     cmp = lambda a, b: a < b

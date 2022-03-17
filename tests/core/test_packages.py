@@ -24,6 +24,7 @@ def test_find():
     assert packages.find('neopixel', '~6', target='7') == '6.2.4'
     assert packages.find('neopixel', '6.0.3', target='7') == '6.0.3'
     assert packages.find('dynamixel', '*', target='7') == '0.0.0'
+    assert packages.find('adafruit_lis3mdl', 'latest', target='7') == '1.1.12'
     with pytest.raises(errors.PackageNotFound):
         packages.find('bogus', '*', target='7')
     with pytest.raises(errors.VersionNotFound):

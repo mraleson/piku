@@ -4,7 +4,7 @@ import shutil
 import hashlib
 import difflib
 import requests
-from poetry.core.semver import parse_constraint
+from poetry.core.semver import parse_constraint, exceptions
 
 
 def checksum(path):
@@ -77,6 +77,15 @@ def parse_semver(constraint):
         constraint = f'{matches[-1]}.*'.join(constraint.rsplit(matches[-1], 1))
 
     return parse_constraint(constraint)
+
+# return a list of semvers sorted in order
+def sort_versions(items, reverse=False):
+    def key(item):
+        try:
+            return parse_semver(item)
+        except exceptions.ParseConstraintError:
+            return parse_semver('0.0.0')
+    return sorted(items, key=key, reverse=reverse)
 
 # cmp(a, b) should returns true if a is less than b else false
 def bisect(a, x, cmp, lo=0, hi=None):

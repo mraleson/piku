@@ -39,7 +39,7 @@ def find(package, constraint, target=None):
         raise errors.PackageNotFound(package)
 
     # find latest matching version
-    versions = sorted(list(packages[package].keys()), reverse=True)
+    versions = utils.sort_versions(list(packages[package].keys()), reverse=True)
     for version in versions:
         matched = utils.matches_semver(constraint, version) or version == constraint
         if matched:
