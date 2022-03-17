@@ -25,6 +25,11 @@ def add(package_name, package_constraint):
             packages.install(package, updated_lock)
 
 def add_command(args):
+    # check that we are in a piku project directory
+    if not config.valid():
+        print('Failed: unable to find piku project in current directory.')
+        return
+
     # parse package and constraint
     package = args.package
     constraint = 'latest'

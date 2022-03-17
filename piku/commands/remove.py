@@ -4,6 +4,11 @@ from piku.core import config, packages, utils, locker
 def remove_command(args):
     package = args.package.lower()
 
+    # check that we are in a piku project directory
+    if not config.valid():
+        print('Failed: unable to find piku project in current directory.')
+        return
+
     # remove package from pyproject.toml
     if not config.remove(f'tool.piku.dependencies.{package}'):
         print(f'Unable to find matching package {package} in pyproject.toml')
