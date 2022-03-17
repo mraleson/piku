@@ -17,18 +17,22 @@ def main():
     p.add_argument('project', help='project name')
 
     # add command
-    p = subparsers.add_parser('add', help='download and add module to project')
+    p = subparsers.add_parser('add', help='download and add package to project')
     p.set_defaults(cmd=commands.add_command)
-    p.add_argument('module', help='module name [neopixel, file:/path/to/module.mpy]')
+    p.add_argument('package', help='package name [neopixel, neopixel@^6, neopixel@preferred, neopixel@latest]')
 
     # remove command
-    p = subparsers.add_parser('remove', help='remove module from project')
+    p = subparsers.add_parser('remove', help='remove package from project')
     p.set_defaults(cmd=commands.remove_command)
-    p.add_argument('module', help='module name [neopixel, my_module_name]')
+    p.add_argument('package', help='package name [neopixel, my_package_name]')
 
     # install command
     p = subparsers.add_parser('install', help='install project dependencies')
     p.set_defaults(cmd=commands.install_command)
+
+    # upgrade command
+    p = subparsers.add_parser('upgrade', help='upgrade all project dependencies to latest')
+    p.set_defaults(cmd=commands.upgrade_command)
 
     # serial command
     p = subparsers.add_parser('serial', help='connect usb serial port of device')
@@ -48,8 +52,8 @@ def main():
     # info command
     p = subparsers.add_parser('info', help='show additional piku information')
     p.set_defaults(cmd=commands.info_command)
-    p.add_argument('--clear-cache', action='store_true', help='clear module cache')
-    p.add_argument('-m', '--modules', action='store_true', help='list availiable modules')
+    p.add_argument('--clear-cache', action='store_true', help='clear package cache')
+    p.add_argument('-p', '--packages', action='store_true', help='list availiable packages')
 
     # parse and execute
     args = parser.parse_args()

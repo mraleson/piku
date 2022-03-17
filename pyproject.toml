@@ -21,11 +21,15 @@ appdirs = "^1.4.4"
 requests = "^2.27.1"
 Jinja2 = "^3.0.3"
 adafruit-board-toolkit = "^1.1.0"
+poetry-core = "^1.0.7"
+cachy = "^0.3.0"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^7.0.0"
 pylint-quotes = "^0.2.3"
 pylint = "^2.12.2"
+pytest-watcher = "^0.2.3"
+pytest-mock = "^3.7.0"
 
 [tool.poetry.scripts]
 piku = 'piku.main:main'
@@ -33,3 +37,8 @@ piku = 'piku.main:main'
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [ "tests" ]

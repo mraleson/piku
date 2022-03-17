@@ -1,6 +1,6 @@
 import os
 from jinja2 import Template
-from piku.core import utils
+from piku.core import utils, packages
 from piku.commands.version import get_version
 
 
@@ -18,13 +18,13 @@ def create_command(args):
     context = {
         'project': args.project,
         'piku': get_version(),
-        'bundle': '7',
+        'circuit_python': packages.latest_target(),
         'device': '',
         'serial': ''
     }
 
     # show piku version
-    print(f'Piku v{context["piku"]}')
+    print(f'Piku v{context["piku"]} creating project {args.project}')
 
     # check that path doesnt exist
     if os.path.exists(project_path):

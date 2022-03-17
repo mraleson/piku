@@ -1,7 +1,7 @@
 [tool.piku]
 project = "{{project}}"
 piku = "{{piku}}"
-circuitpython = "{{bundle}}"
+circuit-python = "{{circuit_python}}"
 {% if board %}
 board = "{{board}}"
 {% endif %}
