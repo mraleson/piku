@@ -52,17 +52,11 @@ def lock(existing, additions=None, removals=None):
                 dep_info = packages.info(dep, dependencies[dep])
                 if dep not in project_dependencies:
                     if dep in expanded and expanded[dep]['version'] != dep_info['version']:
-                        print(f'Warning: changed package {dep} {expanded[dep]["version"]} to {dep_info["version"]}')
+                        conflicts.add(dep)
                     expanded[dep] = dep_info
                 else:
                     conflicts.add(dep)
         locked = expanded
-
-    # note conflicts
-    if conflicts:
-        print('Note: There are multiple sources depending on following packages:')
-        for c in conflicts:
-            print(f' * {c}')
 
     # clean orphan dependencies
     previous = None
@@ -78,7 +72,7 @@ def lock(existing, additions=None, removals=None):
                 del expanded[package]
         locked = expanded
 
-    return locked
+    return locked, conflicts
 
 
 # from piku.core import config, packages, project

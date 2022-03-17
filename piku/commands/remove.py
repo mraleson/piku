@@ -24,7 +24,7 @@ def remove_command(args):
 
     # update lock file
     existing_lock = locker.load()
-    updated_lock = locker.lock(existing_lock, removals=[package])
+    updated_lock, conflicts = locker.lock(existing_lock, removals=[package])
     locker.save(updated_lock)
 
     # remove all packages no longer in lock file

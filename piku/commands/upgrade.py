@@ -8,6 +8,15 @@ def upgrade_command(args):
         print('Failed: unable to find piku project in current directory.')
         return
 
+    # re-add all packages as latest
+    total_conflicts = set()
     dependencies = config.get('dependencies')
     for package in dependencies:
-        add(package, 'latest')
+        previous, current, conflicts = add(package, 'latest')
+        total_conflicts = total_conflicts.union(conflicts)
+
+    # note conflicts
+    if total_conflicts:
+        print('Note, there may be multiple version requirements for following packages:')
+        for c in total_conflicts:
+            print(f' * {c}')

@@ -11,7 +11,7 @@ def add(package_name, package_constraint):
 
     # update locked packages
     existing_lock = locker.load()
-    updated_lock = locker.lock(existing_lock, additions=[(package_name, package_version)])
+    updated_lock, conflicts = locker.lock(existing_lock, additions=[(package_name, package_version)])
     locker.save(updated_lock)
 
     # remove old packages that were updated or replaced
@@ -23,6 +23,8 @@ def add(package_name, package_constraint):
     for package in updated_lock:
         if package not in existing_lock or updated_lock[package]['version'] != existing_lock[package]['version']:
             packages.install(package, updated_lock)
+
+    return existing_lock, updated_lock, conflicts
 
 def add_command(args):
     # check that we are in a piku project directory
@@ -38,7 +40,12 @@ def add_command(args):
 
     # find a match for the required package
     try:
-        add(package, constraint)
+        previous, current, conflicts = add(package, constraint)
+        if conflicts:
+            print('Note, there may be multiple version requirements for following packages:')
+            for c in conflicts:
+                print(f' * {c}')
+
     except errors.PackageNotFound:
         print(f'Unable to resolve requested package: {package}')
         suggestions = packages.suggest(package)
