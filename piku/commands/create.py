@@ -2,6 +2,7 @@ import os
 from jinja2 import Template
 from piku.core import utils
 from piku.commands.version import get_version
+from argparse import Namespace
 
 
 def template(path, context):
@@ -10,9 +11,13 @@ def template(path, context):
     with open(path, 'w') as f:
         f.write(template.render(**context))
 
-def create_command(args):
+def initialize_command(args):
+    args = Namespace(project=".")
+    create_command(args, True)
+
+def create_command(args, initialize=False):
     # build template context
-    project_path = f'./{args.project}'
+    project_path = f'./{args.project}' if args.project is not None else os.getcwd()
     toml_path = os.path.join(project_path, 'pyproject.toml')
     readme_path = os.path.join(project_path, 'README.md')
     context = {
@@ -27,7 +32,7 @@ def create_command(args):
     print(f'Piku v{context["piku"]}')
 
     # check that path doesnt exist
-    if os.path.exists(project_path):
+    if os.path.exists(project_path) and not initialize:
         print(f'Unable to create project: directory {project_path} already exists.')
         return
 

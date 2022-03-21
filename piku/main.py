@@ -15,6 +15,10 @@ def main():
     p = subparsers.add_parser('create', help='create new CircuitPython project')
     p.set_defaults(cmd=commands.create_command)
     p.add_argument('project', help='project name')
+    
+    # initialize command
+    p = subparsers.add_parser('initialize', help='initialize new CircuitPython project')
+    p.set_defaults(cmd=commands.initialize_command)
 
     # add command
     p = subparsers.add_parser('add', help='download and add module to project')
