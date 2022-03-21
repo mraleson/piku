@@ -17,11 +17,12 @@ def initialize_command(args):
 
 def create_command(args, initialize=False):
     # build template context
-    project_path = f'./{args.project}' if args.project is not None else os.getcwd()
+    project_path = f'./{args.project}'
+    project_name = os.path.basename(os.getcwd()) if args.project == "." else project_path[2:]
     toml_path = os.path.join(project_path, 'pyproject.toml')
     readme_path = os.path.join(project_path, 'README.md')
     context = {
-        'project': args.project,
+        'project': project_name,
         'piku': get_version(),
         'bundle': '7',
         'device': '',
