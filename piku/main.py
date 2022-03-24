@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import sys
 import argparse
 import traceback
@@ -15,6 +16,13 @@ def main():
     p = subparsers.add_parser('create', help='create new CircuitPython project')
     p.set_defaults(cmd=commands.create_command)
     p.add_argument('project', help='project name')
+    p.add_argument('directory', nargs='?', default=None, help='optional path to existing project directory')
+
+    # initialize command
+    p = subparsers.add_parser('initialize', help='initialize new CircuitPython project in current directory')
+    p.set_defaults(cmd=commands.create_command)
+    p.add_argument('--project', default=os.path.basename(os.getcwd()), help=argparse.SUPPRESS)
+    p.add_argument('--directory', default=os.getcwd(), help=argparse.SUPPRESS)
 
     # add command
     p = subparsers.add_parser('add', help='download and add package to project')
