@@ -2,7 +2,6 @@ import os
 from jinja2 import Template
 from piku.core import utils
 from piku.commands.version import get_version
-from argparse import Namespace
 
 
 def template(path, context):
@@ -11,18 +10,16 @@ def template(path, context):
     with open(path, 'w') as f:
         f.write(template.render(**context))
 
-def initialize_command(args):
-    args = Namespace(project=".")
-    create_command(args, True)
-
-def create_command(args, initialize=False):
+def create_command(args):
     # build template context
-    project_path = f'./{args.project}'
-    project_name = os.path.basename(os.getcwd()) if args.project == "." else project_path[2:]
+    project_path = args.directory or f'./{args.project}'
     toml_path = os.path.join(project_path, 'pyproject.toml')
     readme_path = os.path.join(project_path, 'README.md')
+    gitignore_path = os.path.join(project_path, '.gitignore')
+    code_path = os.path.join(project_path, 'project')
+    template_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../template')
     context = {
-        'project': project_name,
+        'project': args.project,
         'piku': get_version(),
         'bundle': '7',
         'device': '',
@@ -33,17 +30,32 @@ def create_command(args, initialize=False):
     print(f'Piku v{context["piku"]}')
 
     # check that path doesnt exist
-    if os.path.exists(project_path) and not initialize:
+    if os.path.exists(project_path) and not args.directory:
         print(f'Unable to create project: directory {project_path} already exists.')
         return
+    os.makedirs(project_path, exist_ok=True)
 
-    # create project from template
-    src = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../template')
-    utils.copy(src, project_path, contents=True)
+    # create pyproject.toml if it doesn't exist (fail if it does)
+    if not os.path.exists(toml_path):
+        utils.copy(os.path.join(template_dir, 'pyproject.toml'), toml_path)
+        template(toml_path, context)
+    else:
+        print(f'Unable to create project: {toml_path} already exists.')
+        return
 
-    # template files
-    template(toml_path, context)
-    template(readme_path, context)
+    # create readme if it doesn't exist
+    if not os.path.exists(readme_path):
+        utils.copy(os.path.join(template_dir, 'README.md'), readme_path)
+        template(readme_path, context)
+
+    # create gitignore if it doesn't already exist
+    if not os.path.exists(gitignore_path):
+        utils.copy(os.path.join(template_dir, '.gitignore'), gitignore_path)
+        template(readme_path, context)
+
+    # create default code folder if it doesn't exist
+    if not os.path.exists(code_path):
+        utils.copy(os.path.join(template_dir, 'project'), code_path, contents=True)
 
     print('Done.')
 
