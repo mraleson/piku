@@ -15,7 +15,7 @@ def test_create(capsys):
     os.chdir(test_path)
 
     # create project
-    create_command(SimpleNamespace(project=project))
+    create_command(SimpleNamespace(project=project, directory=None))
     out, _ = capsys.readouterr()
     assert project in out
     assert 'pyproject.toml' in os.listdir(os.path.join(test_path, project))

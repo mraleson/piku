@@ -19,7 +19,7 @@ def project(mocker, capsys):
 
     # create a project
     project_name = 'bogus'
-    create_command(SimpleNamespace(project=project_name))
+    create_command(SimpleNamespace(project=project_name, directory=None))
     os.chdir(project_name)
     capsys.readouterr()
 
