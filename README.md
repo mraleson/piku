@@ -241,7 +241,7 @@ while True:
     time.sleep(0.3)
 ```
 
-##### Installing Dependencies
+##### Installing Packages
 Next install the required libraries for the AdaFruit Feather Sense example:
 ```
 piku add adafruit_apds9960
