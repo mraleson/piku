@@ -52,6 +52,7 @@ def main():
     p.set_defaults(cmd=commands.deploy_command)
     p.add_argument('-d', '--device', default=None, help='path of device to deploy to project to')
     p.add_argument('-y', '--yes', action='store_true', help='deploy to discovered device without confirmation dialog')
+    p.add_argument('-w', '--watch', action='store_true', help='auto deploy when project files')
 
     # version command
     p = subparsers.add_parser('version', help='show piku version')

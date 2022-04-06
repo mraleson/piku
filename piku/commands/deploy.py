@@ -1,4 +1,10 @@
-from piku.core import config, device
+from piku.core import config, device, utils
+
+
+def deploy(drive):
+    print(f'Deploying project to device {drive}...')
+    device.deploy(drive)
+    print('Done')
 
 
 def deploy_command(args):
@@ -36,8 +42,11 @@ def deploy_command(args):
     print(f'Backing up device files from {drive} to {config.backup_path}...')
     device.backup(drive, config.backup_path)
 
-    # synchronize files to device
-    print(f'Deploying project to device {drive}...')
-    device.deploy(drive)
 
-    print('Done')
+    # synchronize files to device
+    if not args.watch:
+        deploy(drive)
+        return
+
+    # watch files and auto deploy
+    utils.watch(config.get('source'), lambda: deploy(drive))

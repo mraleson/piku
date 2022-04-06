@@ -54,4 +54,4 @@ def sync(src_dir, dst_dir, exclude=None, verbosity=1):
             changes_detected = True
 
     if verbosity > 0 and not changes_detected:
-        print('Nothing to deploy, no changes were detected.')
+        print('Nothing to deploy, no source differences were detected.')
