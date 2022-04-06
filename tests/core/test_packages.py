@@ -1,7 +1,7 @@
 import os
 import pytest
 from tests.fixtures import tempdir
-from piku.core import packages, errors
+from piku.core import packages, errors, utils
 
 
 def test_get_index():
@@ -20,11 +20,11 @@ def test_suggest():
     assert suggestions == ['neopixel', 'neopixel_spi', 'adafruit_neokey', 'adafruit_neotrellis', 'asyncio']
 
 def test_find():
-    assert packages.find('neopixel', '*', target='7') == '6.2.4'
-    assert packages.find('neopixel', '~6', target='7') == '6.2.4'
+    assert utils.parse_semver(packages.find('neopixel', '*', target='7')) >= utils.parse_semver('6.2.4')
+    assert packages.find('neopixel', '~6', target='7').startswith('6.')
     assert packages.find('neopixel', '6.0.3', target='7') == '6.0.3'
     assert packages.find('dynamixel', '*', target='7') == '0.0.0'
-    assert packages.find('adafruit_lis3mdl', 'latest', target='7') == '1.1.12'
+    assert utils.parse_semver(packages.find('adafruit_lis3mdl', 'latest', target='7')) >= utils.parse_semver('1.1.12')
     with pytest.raises(errors.PackageNotFound):
         packages.find('bogus', '*', target='7')
     with pytest.raises(errors.VersionNotFound):
