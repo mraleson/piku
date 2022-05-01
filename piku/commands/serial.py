@@ -1,14 +1,12 @@
 from serial import Serial
 from serial.serialutil import SerialException
-from serial.tools import list_ports
 from serial.tools.miniterm import Miniterm
+import adafruit_board_toolkit.circuitpython_serial
+
 
 
 def default():
-    ports = list_ports.comports()
-    # On macOS, we don't want to return the Bluetooth COM ports and
-    # on other platforms we may only want usb serial devices as well
-    ports = [p for p in ports if 'usb' in p.hwid.lower()]
+    ports = adafruit_board_toolkit.circuitpython_serial.repl_comports()
     if not ports:
         return None
     return ports[0].device

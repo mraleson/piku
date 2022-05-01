@@ -1,20 +1,33 @@
-import os
-from piku.core import config, modules, utils
+from piku.core import config, packages, utils, locker
 
 
 def remove_command(args):
-    module = args.module.lower()
+    package = args.package.lower()
 
-    # remove module from pyproject.toml
-    if not config.remove(f'tool.piku.dependencies.{module}'):
-        print(f'Unable to find matching module {module} in pyproject.toml')
-        suggestions = utils.similar(module, config.get('tool.piku.dependencies').keys())
+    # check that we are in a piku project directory
+    if not config.valid():
+        print('Failed: unable to find piku project in current directory.')
+        return
+
+    # remove package from pyproject.toml
+    if not config.remove(f'tool.piku.dependencies.{package}'):
+        print(f'Unable to find matching package {package} in pyproject.toml')
+        suggestions = utils.similar(package, config.get('tool.piku.dependencies').keys())
         if suggestions:
             print('Did you mean')
             for suggestion in suggestions:
                 print(f' * {suggestion}')
         return
 
-    # remove file from library
-    if not modules.remove(module):
-        print(f'Warning: Unable to find and delete matching file in source for module {module} in project')
+    # remove package to project toml file
+    config.remove(f'dependencies.{package}')
+
+    # update lock file
+    existing_lock = locker.load()
+    updated_lock, conflicts = locker.lock(existing_lock, removals=[package])
+    locker.save(updated_lock)
+
+    # remove all packages no longer in lock file
+    removed = set(existing_lock.keys()) - set(updated_lock.keys())
+    for package in removed:
+        packages.remove(package, existing_lock)

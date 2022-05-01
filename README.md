@@ -3,45 +3,73 @@ Piku is small command line utility for managing CircuitPython projects
 
 The purpose of this project is to make creating a CircuitPython project, installing packages, deploying, and connecting to a CircuitPython device easy to do from the command line.
 
+### Warning
+This tool is in early development please be careful when deploying and confirm before deploying that you are only deploying your CircuitPython device, not another drive or device.
 
-# Warning
-This tool is in very early development and needs testing! Please be careful when deploying and make sure you are only deploying your CircuitPython device!  Use at your own risk.
+
+---
 
 
-# Getting Started
+# Quick Start
 
 ### Installation
-Piku has been lightly tested on Linux, Windows, and macOS.  After installation you can learn about Piku or any command line arguments or flags type `piku -h` or `piku <command> -h` or the documentation here.
-
-##### Windows
-To install Piku in Windows please install Python 3.8 or greater from the Windows Store or the official Python website.  Then install using `pip`:
+Piku is a command line tool that can be installed on Windows, macOS, and Linux using pip3.
 
 ```
-pip install piku
+pip install --user piku
 ```
 
-After Piku is installed you should be able to run Piku from the command line.  You can test this by typing `piku version`.
-
-##### Linux
-To install Piku in Linux, make sure you have Python 3.8 or greater and install using pip3.
+### Usage
+After piku is installed you can now create, deploy, add packages, and upgrade CircuitPython projects.  You can also use piku to connect to and debug your devices.
 
 ```
-pip3 install --user piku
+usage: piku [-h] {create,add,remove,install,upgrade,serial,deploy,version,info} ...
+    create              create new CircuitPython project
+    add                 download and add package to project
+    remove              remove package from project
+    install             install project dependencies
+    upgrade             upgrade all project dependencies to latest
+    serial              connect usb serial port of device
+    deploy              deploy project to device
+    version             show piku version
+    info                show additional piku information
+
 ```
 
-After Piku is installed you should be able to run Piku from the command line.  You can test this by typing `piku version`.
+
+---
+
+
+# Documentation
+
+
+### Installation
+Piku can be installed on Windows, macOS, or Linux.  This documentation is a work in progress, is you find issues please feel free to update them and make a pull request. To install Piku please ensure that you have at least **Python 3.8** or and **pip3** installed, then run.
+
+```
+pip install --user piku
+```
+
+Or alternatively:
+
+```
+python3 -m pip install --user piku
+```
+
+After Piku is installed you should be able to run Piku from the command line.  You can test this by executing:
+
+```
+piku version
+```
+
+##### Additional Steps for Linux
 
 Some linux computers do not have the default pip user bin directory included in the PATH.  You may add this directory to your PATH or install without the `--user` argument.
+
 https://unix.stackexchange.com/questions/612779/warning-not-on-path-when-i-tried-to-install-python-extensions-im-new-to-linu
 
 After installation if your user does not have permissions to use the serial port, you may need to add your user to the `dialout` group.
 https://askubuntu.com/questions/58119/changing-permissions-on-serial-port#answer-58122
-
-##### macOS
-The process for macOS users is similar to that for Linux users. You shouldn't
-have to do anything extra for permissions to use the serial port. The code for
-enumerating serial ports on macOS tries to skip the Bluetooth serial ports and
-only look for serial ports whose device names contain the word 'usbmodem'.
 
 ### Preparing your Device
 
@@ -99,24 +127,45 @@ If you are unable to connect, please confirm that you have the serial drivers fo
 Once connected you can exit by typing `ctrl-x`, enter the CircuitPython REPL by hitting `ctrl-c` and `ctrl-d` to exit the CircuitPython REPL.
 
 
-### Managing CircuitPython Modules/Libraries
+### Adding CircuitPython Packages/Libraries
 
-You can easily download and add CircuitPython modules from the official Bundle or Community bundle using the command.  For example to download and add the `neopixel` module you would type:
+You can easily download and add CircuitPython packages from the official Bundle or Community bundle using the command.  For example to download and add the `neopixel` package you would type:
 
 ```
 piku add neopixel
 ```
 
-The specified module will be downloaded and added to your `lib` folder and your `pyproject.toml` file. You can also remove this module by typing:
+The specified package and its dependencies will be downloaded and added to your `lib` folder and your `pyproject.toml` file. You can also remove this package by typing:
 
 ```
 piku remove neopixel
 ```
 
-You can also install modules you can manually downloaded, please check cli help for more information `piku add -h`.
+You can also install specific versions of packages by specifying in a similar way to other package manages:
 
-Currently Piku just works for the Bundle 7, which was the most recent bundle when the tool was built.  But hopefully a full semver module index and supporting older versions and CircuitPython is something that can be done in the future.
+```
+piku add neopixel@~6
+```
 
+or
+
+```
+piku add neopixel@~6.1.2
+```
+
+You can also specify the target CircuitPython version (6 or 7) in your pyproject.toml file.  One word of warning: package dependencies are often not broadly specified and may clash if you are not installing the latest versions of packages.
+
+### Upgrading Packages
+
+You can upgrade all packages by running the upgrade command.
+```
+piku upgrade
+```
+
+You can also upgrade a single package by adding the latest version.
+```
+piku add neopixel
+```
 
 ### A Complete Example with Adafruit Feather Sense
 
@@ -192,40 +241,44 @@ while True:
     time.sleep(0.3)
 ```
 
-##### Installing Dependencies
+##### Installing Packages
 Next install the required libraries for the AdaFruit Feather Sense example:
 ```
 piku add adafruit_apds9960
 piku add adafruit_bmp280
-piku add adafruit_bus_device
 piku add adafruit_lis3mdl
 piku add adafruit_lsm6ds
-piku add adafruit_register
 piku add adafruit_sht31d
 piku add neopixel
 ```
 
-These modules should now found to your project `lib` folder, and your `pyproject.toml` file.  Confirm this by listing the files in your `lib` directory using `ls project/lib`. The ls command should return something the following if all modules were installed properly:
+These packages should now found to your project `lib` folder, and your `pyproject.toml` file.  Confirm this by listing the files in your `lib` directory using `ls project/lib`. The ls command should return something the following if all packages were installed properly:
 ```
-adafruit_apds9960  adafruit_bmp280.mpy  adafruit_bus_device  adafruit_lis3mdl.mpy  adafruit_lsm6ds  adafruit_register  adafruit_sht31d.mpy  neopixel.mpy
+adafruit_apds9960
+adafruit_bus_device
+adafruit_lsm6ds
+adafruit_register
+neopixel.mpy
+adafruit_bmp280.mpy
+adafruit_lis3mdl.mpy
+adafruit_pixelbuf.mpy
+adafruit_sht31d.mpy
 ```
 
 Your pyproject.toml file should now look something like this:
 ```
 [tool.piku]
 project = "example"
-piku = "0.1.1"
-circuitpython = "7"
+piku = "0.1.8"
+circuit-python = "7"
 
 [tool.piku.dependencies]
-adafruit_apds9960 = "~7"
-adafruit_bmp280 = "~7"
-adafruit_bus_device = "~7"
-adafruit_lis3mdl = "~7"
-adafruit_lsm6ds = "~7"
-adafruit_register = "~7"
-adafruit_sht31d = "~7"
-neopixel = "~7"
+neopixel = "latest"
+adafruit_bmp280 = "latest"
+adafruit_apds9960 = "latest"
+adafruit_lis3mdl = "latest"
+adafruit_lsm6ds = "latest"
+adafruit_sht31d = "latest"
 ```
 
 ##### Deploying to the Device
@@ -255,9 +308,3 @@ Thanks it! Happy hacking!
 # Contributing
 
 Contributions are very welcome, my time to work on the project is limited.  Please post issues and pull requests on Github if you would like to help forward the project.
-
-### Future Work
-
-It would be great to support older versions of CircuitPython and properly detect and download modules using semver.
-
-Loading board specific examples when using create.  It would be neat to index or support examples for boards, so when you create a project the dependencies and `code.py` file are already filled in with starter code.

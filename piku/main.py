@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import sys
 import argparse
 import traceback
@@ -15,20 +16,31 @@ def main():
     p = subparsers.add_parser('create', help='create new CircuitPython project')
     p.set_defaults(cmd=commands.create_command)
     p.add_argument('project', help='project name')
+    p.add_argument('directory', nargs='?', default=None, help='optional path to existing project directory')
+
+    # initialize command
+    p = subparsers.add_parser('initialize', help='initialize new CircuitPython project in current directory')
+    p.set_defaults(cmd=commands.create_command)
+    p.add_argument('--project', default=os.path.basename(os.getcwd()), help=argparse.SUPPRESS)
+    p.add_argument('--directory', default=os.getcwd(), help=argparse.SUPPRESS)
 
     # add command
-    p = subparsers.add_parser('add', help='download and add module to project')
+    p = subparsers.add_parser('add', help='download and add package to project')
     p.set_defaults(cmd=commands.add_command)
-    p.add_argument('module', help='module name [neopixel, file:/path/to/module.mpy]')
+    p.add_argument('package', help='package name [neopixel, neopixel@^6, neopixel@preferred, neopixel@latest]')
 
     # remove command
-    p = subparsers.add_parser('remove', help='remove module from project')
+    p = subparsers.add_parser('remove', help='remove package from project')
     p.set_defaults(cmd=commands.remove_command)
-    p.add_argument('module', help='module name [neopixel, my_module_name]')
+    p.add_argument('package', help='package name [neopixel, my_package_name]')
 
     # install command
     p = subparsers.add_parser('install', help='install project dependencies')
     p.set_defaults(cmd=commands.install_command)
+
+    # upgrade command
+    p = subparsers.add_parser('upgrade', help='upgrade all project dependencies to latest')
+    p.set_defaults(cmd=commands.upgrade_command)
 
     # serial command
     p = subparsers.add_parser('serial', help='connect usb serial port of device')
@@ -40,6 +52,7 @@ def main():
     p.set_defaults(cmd=commands.deploy_command)
     p.add_argument('-d', '--device', default=None, help='path of device to deploy to project to')
     p.add_argument('-y', '--yes', action='store_true', help='deploy to discovered device without confirmation dialog')
+    p.add_argument('-w', '--watch', action='store_true', help='auto deploy when project files')
 
     # version command
     p = subparsers.add_parser('version', help='show piku version')
@@ -48,8 +61,8 @@ def main():
     # info command
     p = subparsers.add_parser('info', help='show additional piku information')
     p.set_defaults(cmd=commands.info_command)
-    p.add_argument('--clear-cache', action='store_true', help='clear module cache')
-    p.add_argument('-m', '--modules', action='store_true', help='list availiable modules')
+    p.add_argument('--clear-cache', action='store_true', help='clear package cache')
+    p.add_argument('-p', '--packages', action='store_true', help='list availiable packages')
 
     # parse and execute
     args = parser.parse_args()

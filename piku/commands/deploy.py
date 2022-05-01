@@ -4,7 +4,7 @@ import shutil
 import platform
 import os                                   # pylint:disable=unused-import
 from subprocess import check_output         # pylint:disable=unused-import
-from piku.core import config                # pylint:disable=unused-import
+from piku.core import config, device, utils # pylint:disable=unused-import
 from piku.core.sync import sync             # pylint:disable=unused-import
 from piku.core.backup import backup         # pylint:disable=unused-import
 
@@ -20,14 +20,14 @@ def _display_board_type_warning(path: str) -> None:
     print('- Download MicroPython from micropython.org')
     print('')
 
-
+    
 def warning_prompt(message: str) -> bool:
     print(message)
     print('WARNING THIS WILL REMOVE ALL OTHER FILES FROM THE DEVICE! PLEASE BE CAREFUL!')
     response = input('Are you sure? [y/n] ').lower().strip()
     return response in ['y', 'yes']
 
-
+  
 def has_correct_size(path, default_board_capacity=DEFAULT_BOARD_CAPACITY):
     total, _, _ = shutil.disk_usage(path)
     return 0 < total < default_board_capacity
@@ -71,16 +71,28 @@ def find_device_path(expected_label=DEFAULT_VOLUME_LABEL):
         return drives[0] if drives else None
     return None
 
+  def deploy(drive):
+    print(f'Deploying project to device {drive}...')
+    device.deploy(drive)
+    print('Done')
+
 
 def deploy_command(args):
-    # get device
+  # check that we are in a piku project directory
+    if not config.valid():
+        print('Refusing to deploy, unable to find piku project in current directory.')
+        return
+
+  # get device
     source = config.get('tool.piku.source')
     expected_label = DEFAULT_VOLUME_LABEL
     device = args.device or find_device_path(expected_label)
     user_confirmed = False
 
+    drive = args.device or device.find_device_path()
+
     # check that we have a device found or specified
-    if not device:
+    if not drive:
         print('Unable find a device and deploy, please specify a device to deploy to.')
         return
 
@@ -103,12 +115,14 @@ def deploy_command(args):
             return
 
     # backup device files before deploy
-    backup_path = config.backup_path
-    print(f'Backing up device files from {device} to {backup_path}...')
-    backup(device, backup_path)
+    print(f'Backing up device files from {drive} to {config.backup_path}...')
+    device.backup(drive, config.backup_path)
+
 
     # synchronize files to device
-    print(f'Deploying project to device {device}...')
-    sync(source, device, exclude=['boot_out.txt', '.*'], verbosity=1)
+    if not args.watch:
+        deploy(drive)
+        return
 
-    print('Done')
+    # watch files and auto deploy
+    utils.watch(config.get('source'), lambda: deploy(drive))

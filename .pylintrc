@@ -71,6 +71,7 @@ disable=
     E0401,
     C0412,
     C0411,
+    W1514,
     missing-docstring,
     import-star-module-level,
     old-octal-literal,

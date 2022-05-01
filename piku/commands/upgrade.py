@@ -2,18 +2,17 @@ from piku.core import config
 from piku.commands.add import add
 
 
-def install_command(args):
+def upgrade_command(args):
     # check that we are in a piku project directory
     if not config.valid():
         print('Failed: unable to find piku project in current directory.')
         return
 
-    # add all dependencies
+    # re-add all packages as latest
     total_conflicts = set()
     dependencies = config.get('dependencies')
     for package in dependencies:
-        constraint = dependencies[package]
-        previous, current, conflicts = add(package, constraint)
+        previous, current, conflicts = add(package, 'latest')
         total_conflicts = total_conflicts.union(conflicts)
 
     # note conflicts

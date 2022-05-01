@@ -4,7 +4,7 @@ import filecmp
 import tempfile
 import pytest
 from piku import __version__
-from piku.core.sync import sync
+from piku.core.utils import sync
 
 
 # helpers

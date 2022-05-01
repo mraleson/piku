@@ -1,30 +1,58 @@
-from piku.core import config, modules
+from piku.core import config, errors, packages, locker
 
+
+# attempt to add a package given it name and a version constraint
+def add(package_name, package_constraint):
+    # find maching package version
+    package_version = packages.find(package_name, package_constraint)
+
+    # add package to project toml file
+    config.set(f'dependencies.{package_name}', package_constraint)
+
+    # update locked packages
+    existing_lock = locker.load()
+    updated_lock, conflicts = locker.lock(existing_lock, additions=[(package_name, package_version)])
+    locker.save(updated_lock)
+
+    # remove old packages that were updated or replaced
+    for package in existing_lock:
+        if package not in updated_lock or updated_lock[package]['version'] != existing_lock[package]['version']:
+            packages.remove(package, existing_lock)
+
+    # install all new packages that were updated or added
+    for package in updated_lock:
+        if package not in existing_lock or updated_lock[package]['version'] != existing_lock[package]['version']:
+            packages.install(package, updated_lock)
+
+    return existing_lock, updated_lock, conflicts
 
 def add_command(args):
-    # decode module
-    module, type, path, version = modules.decode(args.module)
-
-    # check if module already exists
-    if config.get(f'tool.piku.dependencies.{module}'):
-        print(f'Module {module} already added to project. To reinstall, remove the module and add it again.')
+    # check that we are in a piku project directory
+    if not config.valid():
+        print('Failed: unable to find piku project in current directory.')
         return
 
-    # suggest module if we can't find it in index
-    if type == 'index' and not path:
-        print(f'Unable to find source for requested module: {module}')
-        suggestions = modules.suggest(module)
+    # parse package and constraint
+    package = args.package
+    constraint = 'latest'
+    if '@' in args.package:
+        package, constraint = args.package.split('@')
+
+    # find a match for the required package
+    try:
+        previous, current, conflicts = add(package, constraint)
+        if conflicts:
+            print('Note, there may be multiple version requirements for following packages:')
+            for c in conflicts:
+                print(f' * {c}')
+
+    except errors.PackageNotFound:
+        print(f'Unable to resolve requested package: {package}')
+        suggestions = packages.suggest(package)
         if suggestions:
             print('Did you mean')
         for suggestion in suggestions:
             print(f' * {suggestion}')
         return
-
-    # copy or download module
-    print(f'Acquiring {module}...')
-    if not modules.aquire(path):
-        print(f'Unable to aquire requested module: {module}')
-        return
-
-    # save module in pyproject.toml
-    config.set(f'tool.piku.dependencies.{module}', version)
+    except errors.VersionNotFound:
+        print(f'Unable to find {package} package matching version {constraint}')
