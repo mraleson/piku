@@ -21,7 +21,7 @@ appdirs = "^1.4.4"
 requests = "^2.27.1"
 Jinja2 = "^3.0.3"
 adafruit-board-toolkit = "^1.1.0"
-poetry-core = "^1.0.7"
+poetry-core = "1.0.7"
 cachy = "^0.3.0"
 watchdog = "^2.1.7"
 

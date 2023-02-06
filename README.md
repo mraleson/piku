@@ -13,10 +13,10 @@ This tool is in early development please be careful when deploying and confirm b
 # Quick Start
 
 ### Installation
-Piku is a command line tool that can be installed on Windows, macOS, and Linux using pip3.
+Piku is a command line tool that can be installed on Windows, macOS, and Linux using pip3 or pipx.
 
 ```
-pip install --user piku
+pipx install piku
 ```
 
 ### Usage
@@ -44,10 +44,11 @@ usage: piku [-h] {create,add,remove,install,upgrade,serial,deploy,version,info} 
 
 
 ### Installation
-Piku can be installed on Windows, macOS, or Linux.  This documentation is a work in progress, is you find issues please feel free to update them and make a pull request. To install Piku please ensure that you have at least **Python 3.8** or and **pip3** installed, then run.
+Piku can be installed on Windows, macOS, or Linux.  This documentation is a work in progress, is you find issues please feel free to update them and make a pull request. To install Piku please ensure that you have at least **Python 3.8** and **pipx** or **pip3** installed, then run.  Installing via **pipx** is preferred when there are
+dependency conflicts with other tools on your system.
 
 ```
-pip install --user piku
+pipx install piku
 ```
 
 Or alternatively:
@@ -64,7 +65,7 @@ piku version
 
 ##### Additional Steps for Linux
 
-Some linux computers do not have the default pip user bin directory included in the PATH.  You may add this directory to your PATH or install without the `--user` argument.
+Some linux computers do not have the default pip user bin directory included in the PATH.  If installing via pip you may add this directory to your PATH or install without the `--user` argument.
 
 https://unix.stackexchange.com/questions/612779/warning-not-on-path-when-i-tried-to-install-python-extensions-im-new-to-linu
 
