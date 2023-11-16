@@ -23,7 +23,7 @@ def deploy_command(args):
 
     # check that device size and name are as expected to reduce chances of loading onto wrong device
     if not device.has_correct_size(drive):
-        print('Refusing to deploy, specified CircuitPython drive is larger than expected (~2MB).')
+        print('Refusing to deploy, specified CircuitPython drive is larger than expected (~16MB).')
         return
     if not device.has_correct_label(drive):
         print('Refusing to deploy, expected device to have "circuitpy" in path.')
