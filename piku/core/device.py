@@ -38,7 +38,7 @@ def deploy(device):
 
 def has_correct_size(path):
     total, used, free = shutil.disk_usage(path)
-    return 0 < total < 3E6
+    return 0 < total < 1.6E7
 
 def has_correct_label(path):
     if platform.system() == 'Windows':
