@@ -34,6 +34,10 @@ def find(package, constraint, target=None):
     if target is None: target = config.get('circuit-python')
     packages = get_index().get(target)
 
+    # check that target version has packages
+    if not packages:
+        raise errors.PackageIndexNotFound(target)
+
     # check package exists
     if package not in packages:
         raise errors.PackageNotFound(package)
