@@ -17,6 +17,30 @@ def ignored(path, patterns):
     return False
 
 
+# fsync all files to prevent a late OS flush to device triggering a reload
+def fsync_dir(dir_path):
+    print(f'fsync {dir_path}')
+    # sync dir meta data
+    try:
+        dir_fd = os.open(dir_path, os.O_RDONLY)
+        os.fsync(dir_fd)
+    finally:
+        os.close(dir_fd)
+
+    # sync dir
+    for root, dirs, files in os.walk(dir_path, onerror=None):
+
+        # sync files
+        for file in files:
+            path = os.path.join(root, file)
+            with open(path, 'rb') as f:
+                os.fsync(f.fileno())
+
+        # sync dirs
+        for dir in dirs:
+            path = os.path.join(root, dir)
+            fsync_dir(path)
+
 # synchronize
 def sync(src_dir, dst_dir, exclude=None, verbosity=1):
     src_tree = tree(src_dir)
@@ -52,6 +76,9 @@ def sync(src_dir, dst_dir, exclude=None, verbosity=1):
                 print(f'* Removing {full_path}')
             remove(full_path, recursive=False)
             changes_detected = True
+
+    # sync file information to prevent delayed soft reboot on circuit python device
+    fsync_dir(dst_dir)
 
     if verbosity > 0 and not changes_detected:
         print('Nothing to deploy, no source differences were detected.')
